@@ -12,7 +12,7 @@ class PacienteController extends Controller {
      */
     public function index()
     {
-        $pacientes = Paciente::select();
+        $pacientes = Paciente::select(null, array('nome' => ''));
         return $this->response('success', null, $pacientes);
     }
 
