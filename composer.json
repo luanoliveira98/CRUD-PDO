@@ -1,7 +1,19 @@
 {
+    "authors": [
+        {
+            "name": "Luan Oliveira Saldanha",
+            "email": "luanoliveira17@hotmail.com"
+        }
+    ],
     "autoload": {
         "psr-4": {
             "App\\": "App/"
-        }
+        },
+        "files": [
+            "Config/app.php"
+        ]
+    },
+    "require": {
+        "coffeecode/router": "1.0.*"
     }
 }
