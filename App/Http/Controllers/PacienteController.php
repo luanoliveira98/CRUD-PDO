@@ -2,41 +2,101 @@
 
 namespace App\Http\Controllers;
 
-use App\Model\Paciente;
+use App\Models\Paciente;
 class PacienteController extends Controller {
 
+    public $model = 'App\Models\Paciente';
+
+    /**
+     * Listar os registros
+     */
     public function index()
     {
-
+        $pacientes = Paciente::select();
+        return $this->response('success', null, $pacientes);
     }
 
-    public function create()
-    {
-        
-    }
-
+    /**
+     * Inserir novo registro
+     */
     public function store()
     {
-        
+        if(!$data = $this->hasData()) {
+            return $this->response('error', 'NO DATA', null, 400);
+        }
+
+        $paciente = new Paciente();
+        $paciente->nome = $data['nome'];
+        $paciente->dt_nascimento = $data['dt_nascimento'];
+        $paciente->endereco = $data['endereco'];
+        $paciente->sexo = $data['sexo'];
+        $paciente->telefone = $data['telefone'];
+        $paciente->email = $data['email'];
+        if (!$paciente->save()) {
+            return $this->response('error', null, null, 500);
+        }
+
+        return $this->response('success', 'INSERTED', $data);
     }
 
+    /**
+     * Listar um registro em específico
+     * 
+     * @param   array               $data           Dados vindos da URL ($data['id'])
+     */
     public function show(array $data)
     {
+        $id = $data['id'];
+        $paciente = Paciente::find($id);
+        if(!$paciente) {
+            return $this->response('error', 'NOT FOUND', null, 404);
+        }
         
+        return $this->response('success', null, $paciente);
     }
 
-    public function edit(array $data)
-    {
-        
-    }
-
+    /**
+     * Atualizar um registro em específico
+     * 
+     * @param   array               $data           Dados vindos da URL ($data['id'])
+     */
     public function update(array $data)
     {
-        
+        if(!$id = $this->exists($data, 'Paciente')) {
+            return $this->response('error', 'NOT FOUND', null, 404);
+        }
+
+        if(!$data = $this->hasData()) {
+            return $this->response('error', 'NO DATA', null, 400);
+        }
+
+        $paciente = new Paciente();
+        foreach ($data as $key => $value) {
+            $paciente->{$key} = $value;
+        }
+
+        if (!$paciente->update($id)) {
+            return $this->response('error', null, null, 500);
+        }
+
+        return $this->response('success', null, null, 204);
     }
 
+    /**
+     * Excluir um registro em específico
+     * 
+     * @param   array               $data           Dados vindos da URL ($data['id'])
+     */
     public function destroy(array $data)
     {
-        
+        if(!$id = $this->exists($data)) {
+            return $this->response('error', 'NOT FOUND', null, 404);
+        }
+
+        if(!Paciente::delete($id)) {
+            return $this->response('error', null, null, 500);
+        }
+
+        return $this->response('success', null, null, 204);
     }
 }
