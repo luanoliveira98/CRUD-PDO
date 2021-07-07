@@ -23,11 +23,11 @@ class Base {
     }
 
     /**
-     * Método para criação/inserção de dado no banco de dados
+     * Método para inserção de dado no banco de dados
      * 
      * @return  bool                            Inserção ou não de novo registro
      */
-    public function create(): bool
+    public function save(): bool
     {
         $this->setTimestamps();
         $query = $this->getQuery();
