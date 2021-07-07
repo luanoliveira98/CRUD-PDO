@@ -115,7 +115,7 @@ class Base {
      */
     public static function select(): array
     {
-        $sql = "SELECT * FROM ".self::getTabela()." WHERE dt_exclusao IS NULL";
+        $sql = "SELECT * FROM ".self::getTable()." WHERE dt_exclusao IS NULL";
 
         $stmt = self::getConn()->prepare($sql);
         $stmt->execute();
@@ -135,7 +135,7 @@ class Base {
      */
     public static function find(int $id): array
     {
-        $sql = "SELECT * FROM ".self::getTabela()." WHERE dt_exclusao IS NULL AND id = ?";
+        $sql = "SELECT * FROM ".self::getTable()." WHERE dt_exclusao IS NULL AND id = ?";
 
         $stmt = self::getConn()->prepare($sql);
         $stmt->bindValue(1, $id);
@@ -152,7 +152,7 @@ class Base {
      * 
      * @return  string                           Nome da tabela
      */
-    public static function getTabela(): string
+    public static function getTable(): string
     {
         $class = self::getClass();
         $inst = new $class();
