@@ -12,13 +12,14 @@ class Validator extends Base {
      * Busca regras aplicadas na model
      * 
      * @param   string              $model          Model para buscar as regras de validação
+     * @param   string              $type           Tipo da requisição
      * 
      * @return  array                               Regras de validação da model
      */
-    public static function getRules(string $model): array
+    public static function getRules(string $model, string $type): array
     {
         $modelValidate = new $model();
-        return $modelValidate->getRules();
+        return $modelValidate->getRules($type);
     }
 
     /**
@@ -26,13 +27,14 @@ class Validator extends Base {
      * 
      * @param   string              $model          Model para buscar as regras de validação
      * @param   array               $data           Dados para serem validados
+     * @param   string              $type           Tipo da requisição
      * 
-     * @return  object               $erros          Erros retornados da validação
+     * @return  object               $erros         Erros retornados da validação
      */
-    public static function validate(string $model, array $data): array
+    public static function validate(string $model, array $data, string $type = 'insert'): array
     {
         self::$data = $data;
-        $regras = self::getRules($model);
+        $regras = self::getRules($model, $type);
 
         foreach ($regras as $key => $value) {
             foreach (explode('|', $value) as $explodeValue) {
@@ -44,6 +46,9 @@ class Validator extends Base {
                         break;
                     case 'enum':
                         if (!self::enum($key, $opcoes[1])) self::setMessage($key, $regra);
+                        break;
+                    case 'length':
+                        if (!self::length($key, $opcoes[1])) self::setMessage($key, $regra, $opcoes[1]);
                         break;
                     case 'number':
                         if (!self::number($key)) self::setMessage($key, $regra);
@@ -58,8 +63,6 @@ class Validator extends Base {
             }
             
         }
-        echo json_encode(self::$erros);
-        die();
         return self::$erros;
     }
 
@@ -68,10 +71,11 @@ class Validator extends Base {
      * 
      * @param   string              $campo          Campo com o erro
      * @param   string              $regra          Regra do erro
+     * @param   string              $extra          Dados extra para mensagem
      * 
      * @return  Void
      */
-    public static function setMessage(string $campo, string $regra): Void
+    public static function setMessage(string $campo, string $regra, string $extra = null): Void
     {
         $mensagem = "O campo $campo ";
 
@@ -87,6 +91,9 @@ class Validator extends Base {
                 break;
             case 'email':
                 $mensagem .= "deve ser um email válido!";
+                break;
+            case 'length':
+                $mensagem .= "deve ter $extra caracteres!";
                 break;
             default:
                 $mensagem .= "é obrigatório!";
@@ -135,6 +142,20 @@ class Validator extends Base {
     {
         if (!self::required($key)) return true;
         return in_array(self::$data[$key], explode(',',$opcoes));
+    }
+
+    /**
+     * Regra de número de caracteres
+     * 
+     * @param   string              $key            Parametro para ser validado
+     * @param   string              $tamanho        Tamanho em números de caracteres
+     * 
+     * @return  bool                                Resultado da validação
+     */
+    public static function length(string $key, string $tamanho): bool
+    {
+        if (!self::required($key)) return true;
+        return strlen(self::$data[$key]) == $tamanho;
     }
 
     /**
