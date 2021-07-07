@@ -72,14 +72,18 @@ class Base {
     }
 
     public static function select(int $id = null) {
-        
-        $sql = "SELECT * FROM ".self::getTabela();
+        $sql = "SELECT * FROM ".self::getTabela()." WHERE dt_exclusao IS NULL";
 
         if ($id) {
-            $sql .= " WHERE id = ?";
+            $sql .= " AND id = ?";
         }
 
         $stmt = self::getConn()->prepare($sql);
+
+        if ($id) {
+            $stmt->bindValue(1, $id);
+        }
+
         $stmt->execute();
 
         if($stmt->rowCount() > 0) {
@@ -105,9 +109,19 @@ class Base {
 
         $sql = "UPDATE $this->tabela SET ".$query['values']." WHERE id = ?";
         $stmt = self::getConn()->prepare($sql);
-
         $this->bindValues($stmt, $query['campos'], $id);
-        $stmt->execute();
-        return;
+        return $stmt->execute();
+    }
+
+    public static function delete(int $id) {
+        $class = self::getClass();
+        $inst = new $class();
+        $inst->setTimestamps('delete');
+        $query = $inst->getQuery('delete');
+
+        $sql = "UPDATE $inst->tabela SET ".$query['values']." WHERE id = ?";
+        $stmt = self::getConn()->prepare($sql);
+        $inst->bindValues($stmt, $query['campos'], $id);
+        return $stmt->execute();
     }
 }
