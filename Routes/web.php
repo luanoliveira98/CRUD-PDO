@@ -22,14 +22,12 @@ $router->group("ooops");
 $router->get("/{errcode}", "ErroController:index");
 
 /**
- * Paciente
+ * Paciente - API
  */
 $router->group("pacientes");
 $router->get("/", "PacienteController:index");
-$router->get("/criar", "PacienteController:create");
 $router->post("/", "PacienteController:store");
-$router->get("/{id}/mostrar", "PacienteController:show");
-$router->get("/{id}/editar", "PacienteController:edit");
+$router->get("/{id}", "PacienteController:show");
 $router->put("/{id}", "PacienteController:update");
 $router->delete("/{id}", "PacienteController:destroy");
 
