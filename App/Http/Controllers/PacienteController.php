@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-namespace App\Controllers;
-
 use App\Model\Paciente;
 class PacienteController extends Controller {
 
