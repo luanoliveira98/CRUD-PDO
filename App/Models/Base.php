@@ -111,11 +111,16 @@ class Base {
     /**
      * Método para seleção de registros
      * 
-     * @return  array                           Registros selecionados
+     * @param   array               $where          Condicionais da query
+     * @param   array               $orderBy        Ordenação da query
+     * 
+     * @return  array                               Registros selecionados
      */
-    public static function select(): array
+    public static function select(array $where = null, array $orderBy = null): array
     {
         $sql = "SELECT * FROM ".self::getTable()." WHERE dt_exclusao IS NULL";
+        $sql .= self::addQueryOptions($where, $orderBy);
+        //die($sql);
 
         $stmt = self::getConn()->prepare($sql);
         $stmt->execute();
@@ -124,6 +129,80 @@ class Base {
             return $stmt->fetchAll(\PDO::FETCH_ASSOC);
         }
         return [];
+    }
+
+    /**
+     * Adiciona condicionais e/ou ordenação na query
+     * 
+     * @param   array               $where          Condicionais da query
+     * @param   array               $orderBy        Ordenação da query
+     * 
+     * @return  string              $sql            Adicionais para query
+     */
+    public static function addQueryOptions(array $where = null, array $orderBy = null): string
+    {
+        $sql = '';
+        $inst = new self();
+        if ($where) $sql .= $inst->getWhere($where);
+        if ($orderBy) $sql .= $inst->getOrderBy($orderBy);
+
+        return $sql;
+    }
+
+    /**
+     * Adiciona condicionais na query
+     * 
+     * @param   array               $where          Condicionais da query
+     * 
+     * @return  string              $sql            Condicionais para query
+     */
+    public function getWhere(array $orderBy): string
+    {
+        $sql = '';
+
+        foreach($orderBy as $key => $value) {
+            switch ($value) {
+                case null:
+                case 'null':
+                case 'NULL':
+                    $sql .= " AND $key IS NULL";
+                    break;
+                    $sql .= " AND $key IS NULL";
+                    break;
+                case 'not null':
+                case 'NOT NULL':
+                    $sql .= " AND $key IS NOT NULL";
+                    break;
+                default:
+                    $sql .= " AND $key = '$value'";
+                    break;
+            }
+        }
+
+        return $sql;
+    }
+
+    /**
+     * Adiciona ordenação na query
+     * 
+     * @param   array               $orderBy        Ordenação da query
+     * 
+     * @return  string              $sql            Ordenação para query
+     */
+    public function getOrderBy(array $orderBy): string
+    {
+        $sql = ' ORDER BY';
+
+        foreach($orderBy as $key => $value) {
+            $value = ($value) ? $value : 'asc';
+            $sql .= " $key $value";
+            
+            if (!$key === array_key_first($orderBy)) {
+                $sql .= ",";
+            }
+        }
+
+        return $sql;
     }
 
     /**
