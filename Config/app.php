@@ -1,3 +1,3 @@
 <?php
 
-define("URL_BASE", "http://localhost:8000");
+define("URL_BASE", "http://localhost/CRUD-PDO/");
