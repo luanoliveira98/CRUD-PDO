@@ -66,6 +66,9 @@ class Controller {
             case 'NO DATA':
                 return 'Não foram enviados os dados necessários para requisição!';
                 break;
+            case 'ERROR VALIDATOR':
+                return 'Erro ao validar dados da requisição!';
+                break;
             default:
                 return $message;
                 break;
