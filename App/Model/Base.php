@@ -7,7 +7,13 @@ class Base {
     private static $instance;
     public $datas = ['dt_insercao', 'dt_alteracao', 'dt_exclusao'];
 
-    public static function getConn() {
+    /**
+     * Faz conexão com o banco de dados
+     * 
+     * @return  PDO                            Conexão feita com o banco de dados
+     */
+    public static function getConn(): \PDO 
+    {
         
         if(!isset(self::$instance)) {
             self::$instance = new \PDO('mysql:host=localhost;dbname=hygia;charset=utf8','root','');
@@ -16,18 +22,33 @@ class Base {
         return self::$instance;
     }
 
-    public function create() {
+    /**
+     * Método para criação/inserção de dado no banco de dados
+     * 
+     * @return  bool                            Inserção ou não de novo registro
+     */
+    public function create(): bool
+    {
         $this->setTimestamps();
         $query = $this->getQuery();
 
         $sql = "INSERT INTO $this->tabela (".$query['campos'].") VALUES (".$query['values'].")";
         $stmt = self::getConn()->prepare($sql);
         $this->bindValues($stmt, $query['campos']);
-        $stmt->execute();
-        return;
+        return $stmt->execute();
     }
 
-    public function bindValues($stmt, $campos, $id = null) {
+    /**
+     * Atribui os dados para utilização na query sql
+     * 
+     * @param   PDOStatement    $stmt           Query criada
+     * @param   string          $campos         Campos a serem utilizados na query
+     * @param   int             $id             ID do registro
+     * 
+     * @return  Void
+     */
+    public function bindValues(\PDOStatement $stmt, string $campos, int $id = null): Void
+    {
         $count = explode(",", $campos);
         for ($i=0; $i < count($count); $i++) {
             $stmt->bindValue($i+1, $this->{$count[$i]});
@@ -39,7 +60,15 @@ class Base {
         return;
     }
 
-    public function getQuery(string $type = 'insert') {
+    /**
+     * Cria os auxiliares que serão utilizados para criação da query
+     * 
+     * @param   string          $type           Tipo da query a ser criada (insert, update, delete)
+     * 
+     * @return  array                           Auxiliares para criação da query ['campos, 'values']
+     */
+    public function getQuery(string $type = 'insert'): array
+    {
         $campos = [];
         $values = [];
         foreach ($this->campos as $campo) {
@@ -54,7 +83,15 @@ class Base {
         );
     }
 
-    public function setTimestamps(string $type = 'insert') {
+    /**
+     * Cria as datas de inserção, alteração e exclusão para servirem de log nos registros
+     * 
+     * @param   string          $type           Tipo da query a ser criada (insert, update, delete)
+     * 
+     * @return  Void
+     */
+    public function setTimestamps(string $type = 'insert'): Void
+    {
         $this->campos = array_merge($this->campos, $this->datas);
 
         switch ($type) {
@@ -71,39 +108,76 @@ class Base {
         return;
     }
 
-    public static function select(int $id = null) {
+    /**
+     * Método para seleção de registros
+     * 
+     * @return  array                           Registros selecionados
+     */
+    public static function select(): array
+    {
         $sql = "SELECT * FROM ".self::getTabela()." WHERE dt_exclusao IS NULL";
 
-        if ($id) {
-            $sql .= " AND id = ?";
-        }
-
         $stmt = self::getConn()->prepare($sql);
-
-        if ($id) {
-            $stmt->bindValue(1, $id);
-        }
-
         $stmt->execute();
 
         if($stmt->rowCount() > 0) {
-            $resultado = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-            return $resultado;
+            return $stmt->fetchAll(\PDO::FETCH_ASSOC);
         }
         return [];
     }
 
-    public static function getTabela() {
+    /**
+     * Método para seleção de um registro específico
+     * 
+     * @param   int             $id             ID do registro
+     * 
+     * @return  array                           Registros selecionados
+     */
+    public static function find(int $id): array
+    {
+        $sql = "SELECT * FROM ".self::getTabela()." WHERE dt_exclusao IS NULL AND id = ?";
+
+        $stmt = self::getConn()->prepare($sql);
+        $stmt->bindValue(1, $id);
+        $stmt->execute();
+
+        if($stmt->rowCount() > 0) {
+            return $stmt->fetchAll(\PDO::FETCH_ASSOC)[0];
+        }
+        return [];
+    }
+
+    /**
+     * Busca a tabela da classe que chamou o método (usado para funções estáticas)
+     * 
+     * @return  string                           Nome da tabela
+     */
+    public static function getTabela(): string
+    {
         $class = self::getClass();
         $inst = new $class();
         return $inst->tabela;
     }
 
-    public static function getClass() {
+    /**
+     * Busca a classe que chamou o método
+     * 
+     * @return  string                           Classe
+     */
+    public static function getClass(): string
+    {
         return get_called_class();
     }
 
-    public function update(int $id) {
+    /**
+     * Método para atualização de um registro específico
+     * 
+     * @param   int             $id             ID do registro
+     * 
+     * @return  bool                            Atualização ou não do registro
+     */
+    public function update(int $id) 
+    {
         $this->setTimestamps('update');
         $query = $this->getQuery('update');
 
@@ -113,6 +187,13 @@ class Base {
         return $stmt->execute();
     }
 
+    /**
+     * Método para exclusão de um registro específico
+     * 
+     * @param   int             $id             ID do registro
+     * 
+     * @return  bool                            Exclusão ou não do registro
+     */
     public static function delete(int $id) {
         $class = self::getClass();
         $inst = new $class();
