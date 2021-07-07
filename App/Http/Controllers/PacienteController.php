@@ -22,22 +22,22 @@ class PacienteController extends Controller {
         
     }
 
-    public function show(int $id)
+    public function show(array $data)
     {
         
     }
 
-    public function edit(int $id)
+    public function edit(array $data)
     {
         
     }
 
-    public function update(int $id)
+    public function update(array $data)
     {
         
     }
 
-    public function destroy(int $id)
+    public function destroy(array $data)
     {
         
     }
