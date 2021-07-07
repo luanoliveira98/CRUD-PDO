@@ -1,9 +1,19 @@
 <?php
 
-require_once 'vendor/autoload.php';
+require __DIR__ . "/vendor/autoload.php";
 
-use App\Model\PacienteModel;
+use CoffeeCode\Router\Router;
 
-$paciente = new PacienteModel();
-$paciente->nome = 'Luan Oliveira';
-$paciente->create();
+$router = new Router(URL_BASE);
+
+$router->group(null);
+$router->get("/", function($data) {
+    echo "SALVE";
+    return;
+});
+$router->get("/teste", function($data) {
+    echo "TESTE";
+    return;
+});
+
+$router->dispatch();
