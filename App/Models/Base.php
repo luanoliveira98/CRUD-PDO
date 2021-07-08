@@ -120,7 +120,6 @@ class Base {
     {
         $sql = "SELECT * FROM ".self::getTable()." WHERE dt_exclusao IS NULL";
         $sql .= self::addQueryOptions($where, $orderBy);
-        //die($sql);
 
         $stmt = self::getConn()->prepare($sql);
         $stmt->execute();

@@ -19,6 +19,17 @@ class ConsultaController extends Controller {
     }
 
     /**
+     * Listar os registros vínculados a um paciente
+     * 
+     * @param   array               $data           Dados vindos da URL ($data['paciente_id'])
+     */
+    public function getByPacienteId(array $data)
+    {
+        $consultas = Consulta::select(['paciente_id' => $data['paciente_id']], array('dt_agendamento' => ''));
+        return $this->response('success', null, $consultas);
+    }
+
+    /**
      * Inserir novo registro
      */
     public function store()
