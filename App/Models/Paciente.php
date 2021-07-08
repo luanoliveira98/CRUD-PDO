@@ -10,26 +10,13 @@ class Paciente extends Base {
 
     public function getRules(string $type = 'insert'): array
     {
-        switch ($type) {
-            case 'update':
-                return array(
-                    'dt_nascimento' => 'date',
-                    'sexo'          => 'enum:masculino,feminino',
-                    'telefone'      => 'number|size:11',
-                    'email'         => 'email'
-                );
-                break;
-            
-            default:
-                return array(
-                    'nome'          => 'required',
-                    'dt_nascimento' => 'required|date',
-                    'endereco'      => 'required',
-                    'sexo'          => 'required|enum:masculino,feminino',
-                    'telefone'      => 'required|number|size:11',
-                    'email'         => 'required|email'
-                );
-                break;
-        }
+        return array(
+            'nome'          => 'required',
+            'dt_nascimento' => 'required|date',
+            'endereco'      => 'required',
+            'sexo'          => 'required|enum:masculino,feminino',
+            'telefone'      => 'required|number|size:11',
+            'email'         => 'required|email'
+        );
     }
 }

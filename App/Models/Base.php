@@ -118,7 +118,7 @@ class Base {
      */
     public static function select(array $where = null, array $orderBy = null): array
     {
-        $sql = "SELECT * FROM ".self::getTable()." WHERE dt_exclusao IS NULL";
+        $sql = self::getDefaultSelectQuery();
         $sql .= self::addQueryOptions($where, $orderBy);
 
         $stmt = self::getConn()->prepare($sql);
@@ -128,6 +128,28 @@ class Base {
             return $stmt->fetchAll(\PDO::FETCH_ASSOC);
         }
         return [];
+    }
+
+    /**
+     * Define o select padrão inicial para qualquer query
+     * 
+     * @return  string                              Query padrão
+     */
+    public static function setDefaultSelectQuery(): string 
+    {
+        return "SELECT * FROM ".self::getTable()." WHERE dt_exclusao IS NULL";
+    }
+
+    /**
+     * Define o select padrão inicial para qualquer query
+     * 
+     * @return  string                              Query padrão
+     */
+    public static function getDefaultSelectQuery(): string 
+    {
+        $class = self::getClass();
+        $inst = new $class();
+        return $inst::setDefaultSelectQuery();
     }
 
     /**
@@ -213,7 +235,7 @@ class Base {
      */
     public static function find(int $id): array
     {
-        $sql = "SELECT * FROM ".self::getTable()." WHERE dt_exclusao IS NULL AND id = ?";
+        $sql = self::getDefaultSelectQuery()." AND ".self::getTable().".id = ?";
 
         $stmt = self::getConn()->prepare($sql);
         $stmt->bindValue(1, $id);

@@ -10,18 +10,8 @@ class Especialidade extends Base {
 
     public function getRules(string $type = 'insert'): array
     {
-        switch ($type) {
-            case 'update':
-                return array(
-                    'nome'    => 'required',
-                );
-                break;
-            
-            default:
-                return array(
-                    'nome'    => 'required',
-                );
-                break;
-        }
+        return array(
+            'nome'    => 'required',
+        );
     }
 }
