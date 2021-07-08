@@ -6,6 +6,6 @@ class HomeController extends Controller {
 
     public function index()
     {
-        echo "Home";
+        echo "<h1>Cai fora! ᕦ(ツ)ᕤ</h1>";
     }
 }

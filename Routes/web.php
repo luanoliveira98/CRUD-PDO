@@ -54,7 +54,4 @@ $router->put("/{id}", "EspecialidadeController:update");
 $router->delete("/{id}", "EspecialidadeController:destroy");
 
 $router->dispatch();
-
-if($router->error()) {
-    $router->redirect("/ooops/{$router->error()}");
 }
