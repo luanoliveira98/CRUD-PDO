@@ -14,20 +14,20 @@ class Paciente extends Base {
             case 'update':
                 return array(
                     'dt_nascimento' => 'date',
-                    'sexo' => 'enum:masculino,feminino',
-                    'telefone' => 'number|length:11',
-                    'email' => 'email'
+                    'sexo'          => 'enum:masculino,feminino',
+                    'telefone'      => 'number|size:11',
+                    'email'         => 'email'
                 );
                 break;
             
             default:
                 return array(
-                    'nome' => 'required',
+                    'nome'          => 'required',
                     'dt_nascimento' => 'required|date',
-                    'endereco' => 'required',
-                    'sexo' => 'required|enum:masculino,feminino',
-                    'telefone' => 'required|number|length:11',
-                    'email' => 'required|email'
+                    'endereco'      => 'required',
+                    'sexo'          => 'required|enum:masculino,feminino',
+                    'telefone'      => 'required|number|size:11',
+                    'email'         => 'required|email'
                 );
                 break;
         }
