@@ -249,6 +249,16 @@ class Base {
     }
 
     /**
+     * Busca a model
+     * 
+     * @return  string                           Model
+     */
+    public static function getModel(string $model): string
+    {
+        return str_replace("|", "", "App\Models\|".ucfirst($model));
+    }
+
+    /**
      * Método para atualização de um registro específico
      * 
      * @param   int             $id             ID do registro
