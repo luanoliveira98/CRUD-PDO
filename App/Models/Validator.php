@@ -128,7 +128,8 @@ class Validator extends Base {
      */
     public static function required(string $key): bool
     {
-        return array_key_exists($key, self::$data);
+        if (!array_key_exists($key, self::$data)) return false;
+        return (!empty(self::$data[$key]));
     }
 
     /**

@@ -2,20 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Paciente;
+use App\Models\Especialidade;
 use App\Models\Validator;
 
-class PacienteController extends Controller {
+class EspecialidadeController extends Controller {
 
-    public $model = 'Paciente';
+    public $model = 'Especialidade';
 
     /**
      * Listar os registros
      */
     public function index()
     {
-        $pacientes = Paciente::select(null, array('nome' => ''));
-        return $this->response('success', null, $pacientes);
+        $especialidades = Especialidade::select(null, array('nome' => ''));
+        return $this->response('success', null, $especialidades);
     }
 
     /**
@@ -31,14 +31,9 @@ class PacienteController extends Controller {
             return $this->response('error', 'ERROR VALIDATOR', $validator, 400);
         }
 
-        $paciente = new Paciente();
-        $paciente->nome = $data['nome'];
-        $paciente->dt_nascimento = $data['dt_nascimento'];
-        $paciente->endereco = $data['endereco'];
-        $paciente->sexo = $data['sexo'];
-        $paciente->telefone = $data['telefone'];
-        $paciente->email = $data['email'];
-        if (!$paciente->save()) {
+        $especialidade = new Especialidade();
+        $especialidade->nome = $data['nome'];
+        if (!$especialidade->save()) {
             return $this->response('error', null, null, 500);
         }
 
@@ -53,12 +48,12 @@ class PacienteController extends Controller {
     public function show(array $data)
     {
         $id = $data['id'];
-        $paciente = Paciente::find($id);
-        if(!$paciente) {
+        $especialidade = Especialidade::find($id);
+        if(!$especialidade) {
             return $this->response('error', 'NOT FOUND', null, 404);
         }
         
-        return $this->response('success', null, $paciente);
+        return $this->response('success', null, $especialidade);
     }
 
     /**
@@ -80,12 +75,12 @@ class PacienteController extends Controller {
             return $this->response('error', 'ERROR VALIDATOR', $validator, 400);
         }
 
-        $paciente = new Paciente();
+        $especialidade = new Especialidade();
         foreach ($data as $key => $value) {
-            $paciente->{$key} = $value;
+            $especialidade->{$key} = $value;
         }
 
-        if (!$paciente->update($id)) {
+        if (!$especialidade->update($id)) {
             return $this->response('error', null, null, 500);
         }
 
@@ -103,7 +98,7 @@ class PacienteController extends Controller {
             return $this->response('error', 'NOT FOUND', null, 404);
         }
 
-        if(!Paciente::delete($id)) {
+        if(!Especialidade::delete($id)) {
             return $this->response('error', null, null, 500);
         }
 

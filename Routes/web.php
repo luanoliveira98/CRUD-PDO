@@ -43,6 +43,16 @@ $router->put("/{id}", "ConsultaController:update");
 $router->patch("/{id}", "ConsultaController:execute");
 $router->delete("/{id}", "ConsultaController:destroy");
 
+/**
+ * Especialidade - API
+ */
+$router->group("especialidades");
+$router->get("/", "EspecialidadeController:index");
+$router->post("/", "EspecialidadeController:store");
+$router->get("/{id}", "EspecialidadeController:show");
+$router->put("/{id}", "EspecialidadeController:update");
+$router->delete("/{id}", "EspecialidadeController:destroy");
+
 $router->dispatch();
 
 if($router->error()) {
