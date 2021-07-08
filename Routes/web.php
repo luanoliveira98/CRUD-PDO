@@ -39,6 +39,7 @@ $router->get("/", "ConsultaController:index");
 $router->post("/", "ConsultaController:store");
 $router->get("/{id}", "ConsultaController:show");
 $router->put("/{id}", "ConsultaController:update");
+$router->patch("/{id}", "ConsultaController:execute");
 $router->delete("/{id}", "ConsultaController:destroy");
 
 $router->dispatch();

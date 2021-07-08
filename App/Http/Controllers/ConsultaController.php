@@ -94,6 +94,27 @@ class ConsultaController extends Controller {
     }
 
     /**
+     * Muda status para Executado
+     * 
+     * @param   array               $data           Dados vindos da URL ($data['id'])
+     */
+    public function execute(array $data)
+    {
+        if(!$id = $this->exists($data)) {
+            return $this->response('error', 'NOT FOUND', null, 404);
+        }
+
+        $consulta = new Consulta();
+        $consulta->status = 'Executado';
+
+        if (!$consulta->update($id)) {
+            return $this->response('error', null, null, 500);
+        }
+
+        return $this->response('success', null, null, 204);
+    }
+
+    /**
      * Excluir um registro em específico
      * 
      * @param   array               $data           Dados vindos da URL ($data['id'])
