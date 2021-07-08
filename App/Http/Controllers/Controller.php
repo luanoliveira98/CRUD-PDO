@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Base;
+
 class Controller {
 
     /**
@@ -86,7 +88,8 @@ class Controller {
     public function exists(array $data): int
     {
         $id = $data['id'];
-        return ($this->model::find($id)) ? $id : null;
+        $model = Base::getModel($this->model);
+        return ($model::find($id)) ? $id : 0;
     }
     
     /**
