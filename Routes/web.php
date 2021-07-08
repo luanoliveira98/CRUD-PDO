@@ -54,4 +54,3 @@ $router->put("/{id}", "EspecialidadeController:update");
 $router->delete("/{id}", "EspecialidadeController:destroy");
 
 $router->dispatch();
-}
