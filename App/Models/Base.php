@@ -96,15 +96,15 @@ class Base {
 
         switch ($type) {
             case 'insert':
-                $this->dt_insercao = date("Y-m-d h:i:sa");
+                $this->dt_insercao = date("Y-m-d H:i:sa");
                 break;
             case 'delete':
-                $this->dt_exclusao = date("Y-m-d h:i:sa");
+                $this->dt_exclusao = date("Y-m-d H:i:sa");
                 break;
             default:
                 break;
         }
-        $this->dt_alteracao = date("Y-m-d h:i:sa");
+        $this->dt_alteracao = date("Y-m-d H:i:sa");
         return;
     }
 
