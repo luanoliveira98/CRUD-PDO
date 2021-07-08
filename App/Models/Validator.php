@@ -18,6 +18,8 @@ class Validator extends Base {
      */
     public static function getRules(string $model, string $type): array
     {
+        
+        $model =  self::getModel($model);
         $modelValidate = new $model();
         return $modelValidate->getRules($type);
     }
@@ -44,11 +46,17 @@ class Validator extends Base {
                     case 'date':
                         if (!self::date($key)) self::setMessage($key, $regra);
                         break;
+                    case 'time':
+                        if (!self::time($key)) self::setMessage($key, $regra);
+                        break;
                     case 'enum':
                         if (!self::enum($key, $opcoes[1])) self::setMessage($key, $regra);
                         break;
-                    case 'length':
-                        if (!self::length($key, $opcoes[1])) self::setMessage($key, $regra, $opcoes[1]);
+                    case 'size':
+                        if (!self::size($key, $opcoes[1])) self::setMessage($key, $regra, $opcoes[1]);
+                        break;
+                    case 'exists':
+                        if (!self::exists($key, $opcoes[1])) self::setMessage($key, $regra, $opcoes[1]);
                         break;
                     case 'number':
                         if (!self::number($key)) self::setMessage($key, $regra);
@@ -83,8 +91,14 @@ class Validator extends Base {
             case 'date':
                 $mensagem .= "deve ser uma data válida!";
                 break;
+            case 'time':
+                $mensagem .= "deve ser um horário válido!";
+                break;
             case 'enum':
                 $mensagem .= "deve ser uma opção válida!";
+                break;
+            case 'exists':
+                $mensagem .= "deve ser referente a um registro!";
                 break;
             case 'number':
                 $mensagem .= "deve ser um número válido!";
@@ -92,7 +106,7 @@ class Validator extends Base {
             case 'email':
                 $mensagem .= "deve ser um email válido!";
                 break;
-            case 'length':
+            case 'size':
                 $mensagem .= "deve ter $extra caracteres!";
                 break;
             default:
@@ -131,6 +145,19 @@ class Validator extends Base {
     }
 
     /**
+     * Regra de horário válido
+     * 
+     * @param   string              $key            Parametro para ser validado
+     * 
+     * @return  bool                                Resultado da validação
+     */
+    public static function time(string $key): bool
+    {
+        if (!self::required($key)) return true;
+        return date('H:i', strtotime(self::$data[$key])) == self::$data[$key];
+    }
+
+    /**
      * Regra de opção válida
      * 
      * @param   string              $key            Parametro para ser validado
@@ -152,10 +179,25 @@ class Validator extends Base {
      * 
      * @return  bool                                Resultado da validação
      */
-    public static function length(string $key, string $tamanho): bool
+    public static function size(string $key, string $tamanho): bool
     {
         if (!self::required($key)) return true;
         return strlen(self::$data[$key]) == $tamanho;
+    }
+
+    /**
+     * Regra de existência do id na tabela definida
+     * 
+     * @param   string              $key            Parametro para ser validado
+     * @param   string              $tabela         Tabela para comparação
+     * 
+     * @return  bool                                Resultado da validação
+     */
+    public static function exists(string $key, string $tabela): bool
+    {
+        if (!self::required($key)) return true;
+        $model =  self::getModel($tabela);
+        return count($model::find(self::$data[$key])) > 0;
     }
 
     /**
