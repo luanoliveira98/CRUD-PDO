@@ -16,7 +16,7 @@ class Base {
     {
         
         if(!isset(self::$instance)) {
-            self::$instance = new \PDO('mysql:host=localhost;dbname=hygia;charset=utf8','root','');
+            self::$instance = new \PDO(DB.":host=".DB_HOST.";dbname=".DB_NAME.";charset=".DB_CHARSET,DB_USER,DB_PASSWORD);
         }
 
         return self::$instance;
