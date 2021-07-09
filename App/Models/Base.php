@@ -17,6 +17,7 @@ class Base {
         
         if(!isset(self::$instance)) {
             self::$instance = new \PDO(DB.":host=".DB_HOST.";dbname=".DB_NAME.";charset=".DB_CHARSET,DB_USER,DB_PASSWORD);
+
         }
 
         return self::$instance;
@@ -215,12 +216,12 @@ class Base {
         $sql = ' ORDER BY';
 
         foreach($orderBy as $key => $value) {
-            $value = ($value) ? $value : 'asc';
-            $sql .= " $key $value";
-            
-            if (!$key === array_key_first($orderBy)) {
+            if ($key !== array_key_first($orderBy)) {
                 $sql .= ",";
             }
+
+            $value = ($value) ? $value : 'asc';
+            $sql .= " $key $value";
         }
 
         return $sql;

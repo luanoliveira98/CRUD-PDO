@@ -14,7 +14,7 @@ class ConsultaController extends Controller {
      */
     public function index()
     {
-        $consultas = Consulta::select(null, array('dt_agendamento' => ''));
+        $consultas = Consulta::select(null, array('dt_agendamento' => '', 'horario' => ''));
         return $this->response('success', null, $consultas);
     }
 
