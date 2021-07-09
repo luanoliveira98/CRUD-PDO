@@ -21,12 +21,6 @@ $router->group(null);
 $router->get("/", "HomeController:index");
 
 /**
- * Erro
- */
-$router->group("ooops");
-$router->get("/{errcode}", "ErroController:index");
-
-/**
  * Paciente - API
  */
 $router->group("pacientes");
