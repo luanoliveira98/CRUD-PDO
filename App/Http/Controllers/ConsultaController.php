@@ -29,9 +29,16 @@ class ConsultaController extends Controller {
         return $this->response('success', null, $consultas);
     }
 
-    public function isScheduled(string $date, string $time): bool
+    /**
+     * Verifica se a data e hora estão disponíveis para agendamento
+     */
+    public function isScheduled(string $date, string $time, int $id = null): bool
     {
-        return count(Consulta::select(array('dt_agendamento' => $date, 'horario' => $time), null)) > 0;
+        $consulta = Consulta::select(array('dt_agendamento' => $date, 'horario' => $time), null);
+        if ($id && count($consulta) > 0) {
+            return $consulta[0]['id'] == $id ? false : true;
+        }
+        return count($consulta) > 0;
     }
 
     /**
@@ -50,7 +57,7 @@ class ConsultaController extends Controller {
         }
 
         if($this->isScheduled($data['dt_agendamento'], $data['horario'])) {
-            return $this->response('error', 'Data e horário já reservados para outra consulta!', 400);
+            return $this->response('error', 'Data e horário já reservados para outra consulta!', null, 400);
         }
 
         $consulta = new Consulta();
@@ -101,8 +108,8 @@ class ConsultaController extends Controller {
             return $this->response('error', 'ERROR VALIDATOR', $validator, 400);
         }
 
-        if($this->isScheduled($data['dt_agendamento'], $data['horario'])) {
-            return $this->response('error', 'Data e horário já reservados para outra consulta!', 400);
+        if($this->isScheduled($data['dt_agendamento'], $data['horario'], $id)) {
+            return $this->response('error', 'Data e horário já reservados para outra consulta!', null, 400);
         }
 
         $consulta = new Consulta();
