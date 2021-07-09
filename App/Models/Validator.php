@@ -155,7 +155,7 @@ class Validator extends Base {
     public static function time(string $key): bool
     {
         if (!self::required($key)) return true;
-        return date('H:i', strtotime(self::$data[$key])) == self::$data[$key];
+        return date('H:i:s', strtotime(self::$data[$key])) || date('H:i', strtotime(self::$data[$key])) == self::$data[$key];
     }
 
     /**
