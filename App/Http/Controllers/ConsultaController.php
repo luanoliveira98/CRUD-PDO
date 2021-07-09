@@ -25,13 +25,13 @@ class ConsultaController extends Controller {
      */
     public function getByPacienteId(array $data)
     {
-        $consultas = Consulta::select(['paciente_id' => $data['paciente_id']], array('dt_agendamento' => ''));
+        $consultas = Consulta::select(array('paciente_id' => $data['paciente_id']), array('dt_agendamento' => ''));
         return $this->response('success', null, $consultas);
     }
 
     public function isScheduled(string $date, string $time): bool
     {
-        return count(Consulta::select(['dt_agendamento' => $date, 'horario' => $time], null)) > 0;
+        return count(Consulta::select(array('dt_agendamento' => $date, 'horario' => $time), null)) > 0;
     }
 
     /**
@@ -154,5 +154,14 @@ class ConsultaController extends Controller {
         }
 
         return $this->response('success', null, null, 204);
+    }
+
+    /**
+     * Listar as consultas registradas para hoje
+     */
+    public function getScheduledToday()
+    {
+        $consultas = Consulta::select(array('dt_agendamento' => date('Y-m-d')), array('horario' => ''));
+        return $this->response('success', null, $consultas);
     }
 }

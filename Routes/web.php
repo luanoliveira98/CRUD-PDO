@@ -42,6 +42,7 @@ $router->delete("/{id}", "PacienteController:destroy");
 $router->group("consultas");
 $router->get("/", "ConsultaController:index");
 $router->get("/paciente/{paciente_id}", "ConsultaController:getByPacienteId");
+$router->get("/agendadas/hoje", "ConsultaController:getScheduledToday");
 $router->post("/", "ConsultaController:store");
 $router->get("/{id}", "ConsultaController:show");
 $router->put("/{id}", "ConsultaController:update");
