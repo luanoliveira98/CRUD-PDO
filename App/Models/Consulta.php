@@ -11,7 +11,7 @@ class Consulta extends Base {
     public function getRules(string $type = 'insert'): array
     {
         return array(
-            'dt_agendamento'    => 'required|date',
+            'dt_agendamento'    => 'required|date|date_min:today',
             'horario'           => 'required|time',
             'status'            => 'required|enum:executado,pendente',
             'especialidade_id'  => 'required|exists:especialidade',

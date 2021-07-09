@@ -25,6 +25,25 @@ class Validator extends Base {
     }
 
     /**
+     * Retorna o valor referente a data
+     * 
+     * @param   string              $type           Tipo da data
+     * 
+     * @return  string                              Data referente ao tipo
+     */
+    public static function getDate(string $type): string
+    {
+        switch ($type) {
+            case 'today':
+                return date("Y-m-d"); 
+                break;
+            default:
+                return $type;
+                break;
+        }
+    }
+
+    /**
      * Método para validar dados da requisição de acordo com as regras aplicadas na model
      * 
      * @param   string              $model          Model para buscar as regras de validação
@@ -46,6 +65,9 @@ class Validator extends Base {
                     case 'date':
                         if (!self::date($key)) self::setMessage($key, $regra);
                         break;
+                    case 'date_min':
+                        if (!self::date_min($key, $opcoes[1])) self::setMessage($key, $regra, self::getDate($opcoes[1]));
+                        break;
                     case 'time':
                         if (!self::time($key)) self::setMessage($key, $regra);
                         break;
@@ -56,7 +78,7 @@ class Validator extends Base {
                         if (!self::size($key, $opcoes[1])) self::setMessage($key, $regra, $opcoes[1]);
                         break;
                     case 'exists':
-                        if (!self::exists($key, $opcoes[1])) self::setMessage($key, $regra, $opcoes[1]);
+                        if (!self::exists($key, $opcoes[1])) self::setMessage($key, $regra);
                         break;
                     case 'number':
                         if (!self::number($key)) self::setMessage($key, $regra);
@@ -90,6 +112,12 @@ class Validator extends Base {
         switch ($regra) {
             case 'date':
                 $mensagem .= "deve ser uma data válida!";
+                break;
+            case 'date':
+                $mensagem .= "deve ser uma data válida!";
+                break;
+            case 'date_min':
+                $mensagem .= "deve possuir uma data maior ou igual à $extra!";
                 break;
             case 'time':
                 $mensagem .= "deve ser um horário válido!";
@@ -170,6 +198,20 @@ class Validator extends Base {
     {
         if (!self::required($key)) return true;
         return in_array(self::$data[$key], explode(',',$opcoes));
+    }
+
+    /**
+     * Regra de data mínima válida
+     * 
+     * @param   string              $key            Parametro para ser validado
+     * @param   string              $opcoes         Opções para validação
+     * 
+     * @return  bool                                Resultado da validação
+     */
+    public static function date_min(string $key, string $opcoes): bool
+    {
+        if (!self::required($key)) return true;
+        return (strtotime(self::getDate($opcoes)) <= strtotime(self::$data[$key]));
     }
 
     /**
