@@ -29,6 +29,11 @@ class ConsultaController extends Controller {
         return $this->response('success', null, $consultas);
     }
 
+    public function isScheduled(string $date, string $time): bool
+    {
+        return count(Consulta::select(['dt_agendamento' => $date, 'horario' => $time], null)) > 0;
+    }
+
     /**
      * Inserir novo registro
      */
@@ -42,6 +47,10 @@ class ConsultaController extends Controller {
 
         if($validator = Validator::validate($this->model, $data)) {
             return $this->response('error', 'ERROR VALIDATOR', $validator, 400);
+        }
+
+        if($this->isScheduled($data['dt_agendamento'], $data['horario'])) {
+            return $this->response('error', 'Data e horário já reservados para outra consulta!', 400);
         }
 
         $consulta = new Consulta();
@@ -90,6 +99,10 @@ class ConsultaController extends Controller {
 
         if($validator = Validator::validate($this->model, $data, 'update')) {
             return $this->response('error', 'ERROR VALIDATOR', $validator, 400);
+        }
+
+        if($this->isScheduled($data['dt_agendamento'], $data['horario'])) {
+            return $this->response('error', 'Data e horário já reservados para outra consulta!', 400);
         }
 
         $consulta = new Consulta();
